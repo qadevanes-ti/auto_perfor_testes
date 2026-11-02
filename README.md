@@ -1,8 +1,70 @@
-# Payment Quality Lab
+<div align="center">
 
-Portfólio de QA para aprender qualidade de transações de meios de pagamento com **Cypress**, **Node.js** e **k6**. Começa por transferências entre contas fictícias; não implementa protocolos Pix ou redes de cartões.
+# 💳 Payment Quality Lab
 
-## Começar
+**Automação de testes e performance para transações de pagamentos**
+
+Um laboratório de QA para praticar integridade financeira, idempotência e concorrência.
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js_22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Cypress](https://img.shields.io/badge/Cypress-17202C?style=for-the-badge&logo=cypress&logoColor=white)
+![k6](https://img.shields.io/badge/k6-7D64FF?style=for-the-badge&logo=k6&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+
+[![Pipeline de qualidade](https://github.com/qadevanes-ti/auto_perfor_testes/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/qadevanes-ti/auto_perfor_testes/actions/workflows/quality.yml)
+
+[Começar](#-como-executar) · [Cenários](#-cenários-de-qualidade) · [Performance](#-performance-com-k6) · [Plano de testes](docs/test-plan.md) · [Evidências](docs/validation.md)
+
+</div>
+
+---
+
+## 🎯 Sobre o projeto
+
+Portfólio de QA para aprender qualidade de transações de meios de pagamento com uma API local e contas fictícias. O foco é verificar **o que acontece com o dinheiro**: débito e crédito corretos, rejeições sem movimentação e repetição sem cobrança duplicada.
+
+O domínio inicial é transferência entre contas e estorno integral. O simulador não implementa protocolos Pix ou redes de cartões.
+
+## 🧰 Tecnologias utilizadas
+
+| Tecnologia | Aplicação no projeto |
+| --- | --- |
+| **JavaScript** | API, testes funcionais e scripts de carga |
+| **Node.js 22** | Servidor HTTP e teste de concorrência com `node:test` |
+| **Cypress** | Automação funcional da API e verificação dos saldos |
+| **k6** | Geração de carga e critérios de latência e erro |
+| **GitHub Actions** | Execução de testes Node e Cypress a cada push ou pull request |
+
+## 🧪 Cenários de qualidade
+
+| Cenário | O que é verificado | Ferramenta |
+| --- | --- | --- |
+| Pagamento aprovado | Valor, estado, consulta e saldos das duas contas | Cypress |
+| Requisição repetida | Mesmo ID e um único débito | Cypress + Node |
+| Conflito de idempotência | Mesma chave com outro valor retorna `409` | Cypress |
+| Dados inválidos | Zero, negativo, fracionário, string e nulo são rejeitados | Cypress |
+| Saldo insuficiente | Rejeição sem alterar os saldos | Cypress |
+| Estorno repetido | Devolução integral uma única vez | Cypress |
+| Pagamentos simultâneos | Disputa pelo saldo sem saldo negativo | Node |
+| Carga constante | p95, falhas HTTP, falhas de negócio e carga não atendida | k6 |
+
+**Validação local registrada:** 10 testes Cypress e 1 teste Node aprovados. O cenário k6 está preparado e ainda não foi executado no ambiente inicial. Consulte as condições em [Evidências de validação](docs/validation.md); o badge acima acompanha o estado do CI no GitHub.
+
+## 🏗️ Como as peças se conectam
+
+```mermaid
+flowchart LR
+    C["Cypress · regras de negócio"] --> A["API Node.js"]
+    N["Node test · concorrência"] --> B["Instância isolada da API"]
+    K["k6 · carga e latência"] --> A
+    A --> M["Contas e pagamentos em memória"]
+    B --> I["Estado isolado em memória"]
+    G["GitHub Actions"] --> C
+    G --> N
+```
+
+## 🚀 Como executar
 
 Requisitos: Node.js 22. Cypress é instalado pelo npm; k6 deve estar disponível separadamente para os testes de carga.
 
@@ -35,7 +97,7 @@ Performance, com a API em execução:
 npm run perf
 ```
 
-## O que você vai aprender
+## 📚 Trilha de aprendizado
 
 1. **Entender o negócio:** explicar débito, crédito, saldo, estorno e idempotência. R$ 25,00 é representado por `2500` centavos.
 2. **Testar APIs com Cypress:** criar dados independentes por teste; verificar status HTTP, corpo, consulta posterior e efeito nos dois saldos.
@@ -46,7 +108,7 @@ npm run perf
 
 Para cada etapa: leia o teste, execute, explique por que cada asserção existe e adicione um cenário sem copiar o anterior inteiro. Estude a API em paralelo aos testes, mas escreva as expectativas a partir das regras abaixo.
 
-## Regras do laboratório
+## 💰 Regras do laboratório
 
 - Contas começam com saldo inteiro entre 0 e 1 bilhão de centavos, informado na criação para facilitar os exercícios.
 - Pagamentos transferem centavos inteiros positivos entre duas contas diferentes e existentes.
@@ -57,7 +119,7 @@ Para cada etapa: leia o teste, execute, explique por que cada asserção existe 
 - A consulta e a repetição por chave retornam o estado atual do pagamento, inclusive após estorno.
 - O estorno é integral, devolve o dinheiro uma vez e exige que o destinatário ainda tenha saldo. Repetir o estorno retorna o pagamento já estornado.
 
-## API
+## 🔌 Endpoints da API
 
 | Método | Rota | Corpo / objetivo |
 | --- | --- | --- |
@@ -68,7 +130,7 @@ Para cada etapa: leia o teste, execute, explique por que cada asserção existe 
 | GET | `/payments/:id` | Consultar pagamento |
 | POST | `/payments/:id/refund` | `{}` para estorno integral |
 
-## Como avaliar performance
+## 📊 Performance com k6
 
 O cenário agenda **10 iterações por segundo durante 30 segundos**. Cada iteração cria duas contas e faz um pagamento: não confunda iterações por segundo com requisições por segundo. Preparar contas dentro da iteração também afeta a capacidade de gerar carga.
 
@@ -76,7 +138,33 @@ Critérios didáticos: p95 dos pagamentos abaixo de 300 ms, menos de 1% de falha
 
 O gerador e a API na mesma máquina disputam recursos. Registre hardware, versões, duração, carga e limitações antes de comparar resultados. Não conclua capacidade de produção com este simulador.
 
-## Próximos exercícios
+## 🗂️ Estrutura do projeto
+
+```text
+.
+├── .github/workflows/quality.yml  # Pipeline de testes funcionais
+├── cypress/e2e/payments.cy.js     # Cenários de API com Cypress
+├── docs/
+│   ├── test-plan.md              # Estratégia e exercícios pendentes
+│   └── validation.md             # Evidências da validação local
+├── performance/payments.js       # Cenário de carga com k6
+├── scripts/cypress.js            # Inicializador compatível com o editor
+├── src/server.js                 # Simulador de pagamentos
+├── test/concurrency.test.js      # Requisições simultâneas
+└── cypress.config.js             # Configuração do Cypress
+```
+
+## 🛠️ Comandos disponíveis
+
+| Comando | Finalidade | API precisa estar rodando? |
+| --- | --- | --- |
+| `npm start` | Iniciar API em `http://127.0.0.1:3000` | Inicia a API |
+| `npm run cy:open` | Abrir a interface do Cypress | Sim |
+| `npm run cy:run` | Executar Cypress sem interface | Sim |
+| `npm test` | Executar teste de concorrência | Não; cria uma instância temporária |
+| `npm run perf` | Executar carga com k6 instalado | Sim |
+
+## 🧭 Próximos exercícios
 
 - Complete os cenários pendentes na [matriz de testes](docs/test-plan.md).
 - Introduza um defeito: remova temporariamente a proteção de idempotência. Veja os testes falharem e restaure o código.
@@ -88,13 +176,13 @@ O gerador e a API na mesma máquina disputam recursos. Registre hardware, versõ
 - Adicione autenticação e autorização por conta, com testes de acesso indevido.
 - Crie cenários separados de carga gradual, pico e longa duração; compare resultados com o baseline.
 
-## Limites explícitos
+## 🔎 Escopo e limitações
 
 Este é um simulador local sem autenticação, persistência, ledger contábil ou integração bancária. As operações são síncronas em um único processo Node; não há garantia de atomicidade distribuída. Dados e chaves desaparecem ao reiniciar. A criação livre de saldo é uma facilidade de estudo. Use apenas dados fictícios.
 
 Testes reduzem riscos dentro da cobertura e das condições exercitadas; não garantem ausência de defeitos nem conformidade bancária.
 
-## Referências
+## 🔗 Referências
 
 - [Testes de API com Cypress](https://docs.cypress.io/app/guides/api-testing)
 - [Cypress e limitações para performance](https://docs.cypress.io/app/faq)
