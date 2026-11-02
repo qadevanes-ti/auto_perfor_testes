@@ -1,0 +1,14 @@
+{
+  "name": "payment-quality-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Laboratório de qualidade de transações financeiras",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "cy:open": "node scripts/cypress.js open",
+    "cy:run": "node scripts/cypress.js run",
+    "perf": "k6 run performance/payments.js"
+  },
+  "devDependencies": { "cypress": "^15.0.0" }
+}
