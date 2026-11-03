@@ -49,7 +49,7 @@ O domínio inicial é transferência entre contas e estorno integral. O simulado
 | Pagamentos simultâneos | Disputa pelo saldo sem saldo negativo | Node |
 | Carga constante | p95, falhas HTTP, falhas de negócio e carga não atendida | k6 |
 
-**Validação local registrada:** 10 testes Cypress e 1 teste Node aprovados. O cenário k6 está preparado e ainda não foi executado no ambiente inicial. Consulte as condições em [Evidências de validação](docs/validation.md); o badge acima acompanha o estado do CI no GitHub.
+**Validação local registrada:** 19 testes Cypress e 1 teste Node aprovados. O cenário k6 está preparado e ainda não foi executado no ambiente inicial. Consulte as condições em [Evidências de validação](docs/validation.md); o badge acima acompanha o estado do CI no GitHub.
 
 ## 🏗️ Como as peças se conectam
 
@@ -145,7 +145,7 @@ O gerador e a API na mesma máquina disputam recursos. Registre hardware, versõ
 ├── .github/workflows/quality.yml  # Pipeline de testes funcionais
 ├── cypress/e2e/payments.cy.js     # Cenários de API com Cypress
 ├── docs/
-│   ├── test-plan.md              # Estratégia e exercícios pendentes
+│   ├── test-plan.md              # Estratégia e cobertura dos cenários
 │   └── validation.md             # Evidências da validação local
 ├── performance/payments.js       # Cenário de carga com k6
 ├── scripts/cypress.js            # Inicializador compatível com o editor
@@ -166,7 +166,7 @@ O gerador e a API na mesma máquina disputam recursos. Registre hardware, versõ
 
 ## 🧭 Próximos exercícios
 
-- Complete os cenários pendentes na [matriz de testes](docs/test-plan.md).
+- Explore os cenários automatizados na [matriz de testes](docs/test-plan.md) e acrescente novos riscos conforme o domínio evoluir.
 - Introduza um defeito: remova temporariamente a proteção de idempotência. Veja os testes falharem e restaure o código.
 - Simule resposta perdida após aprovação e repita a operação com a mesma chave; confirme que não há novo débito.
 - Adicione persistência e teste recuperação após reinício.

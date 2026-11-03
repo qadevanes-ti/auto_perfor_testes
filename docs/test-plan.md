@@ -12,13 +12,13 @@ Objetivo: detectar perda, criação ou movimentação duplicada de dinheiro e re
 | Estorno repetido | Dinheiro devolvido uma única vez | Cypress |
 | Disputa pelo último saldo | Sem saldo negativo; soma dos saldos preservada | Node concorrente |
 | Carga constante | Latência e erros dentro dos critérios didáticos | k6, execução pendente |
-| Conta inexistente | 404; nenhuma movimentação | Exercício pendente |
-| Pagamento para a mesma conta | 422; saldo preservado | Exercício pendente |
-| Chave ausente | 400; nenhuma movimentação | Exercício pendente |
-| Saldo exatamente igual ao valor | Aprovação; origem zerada | Exercício pendente |
-| Destinatário gastou antes do estorno | Estorno rejeitado; nenhum efeito parcial | Exercício pendente |
-| JSON malformado e valor acima de inteiro seguro | Rejeição controlada | Exercício pendente |
-| Repetição após estorno | Mesmo ID com estado REFUNDED; sem novo débito | Exercício pendente |
+| Origem ou destino inexistente | 404; nenhuma movimentação | Cypress |
+| Pagamento para a mesma conta | 422; saldo preservado | Cypress |
+| Chave ausente | 400; nenhuma movimentação | Cypress |
+| Saldo exatamente igual ao valor | Aprovação; origem zerada | Cypress |
+| Destinatário gastou antes do estorno | Estorno rejeitado; nenhum efeito parcial | Cypress |
+| JSON malformado e valor acima de inteiro seguro | Rejeição controlada | Cypress |
+| Repetição após estorno | Mesmo ID com estado REFUNDED; sem novo débito | Cypress |
 
 ## Evidência para portfólio
 
@@ -26,4 +26,4 @@ Crie um relatório por execução relevante com commit/versão, ambiente, comand
 
 Um relato de defeito deve ter: regra violada, dados usados, passos, resultado esperado, observado e evidência. Evite somente prints verdes: mostre uma falha detectada, a causa e a correção.
 
-Os testes da API simulada não substituem testes contra uma integração real. Os cenários pendentes são exercícios e não fazem parte da cobertura automatizada atual.
+Os testes da API simulada não substituem testes contra uma integração real. Todos os cenários funcionais desta matriz estão automatizados. A execução de carga com k6 permanece pendente; isso não representa cobertura completa de todas as regras possíveis da API.
